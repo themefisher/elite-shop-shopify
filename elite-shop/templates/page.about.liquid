@@ -1,0 +1,21 @@
+{% include 'breadcrumb', title: {{page.title}} %}
+
+<!-- about -->
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <!-- image circle background -->
+        <div class="about-img-bg">
+        
+        <img class="img-fluid mb-4 mb-md-0" src="{{settings.about_img | img_url: '1920x'}}" alt="product-img"></div>
+      </div>
+      <div class="col-md-6">
+        {{page.content}}
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /about -->
+
+{% section 'call-to-action' %}

@@ -1,0 +1,48 @@
+<section class="section">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				{{page.content}}
+			</div>
+			<div class="col-md-8">
+				<!-- accordion -->
+				<div class="accordion" id="faqAccordion">
+          {% for block in section.blocks %}
+					<div class="card">
+						<div class="card-header cursor-pointer" data-toggle="collapse" data-target="#collapse-{{forloop.index}}">
+							<h4 class="mb-0">{{block.settings.question}}</h4>
+						</div>
+						<div id="collapse-{{forloop.index}}" class="collapse {% if forloop.first %} show {%endif%} " data-parent="#faqAccordion">
+							<div class="card-body">{{block.settings.answer}}</div>
+						</div>
+					</div>
+          {% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+{% schema %}
+  {
+    "name": "Faq Page",
+    "blocks": [
+      {
+        "type": "faq",
+        "name": "Faq Item",
+        "settings":[
+          {
+            "type": "text",
+            "id": "question",
+            "label" : "Question"
+          },
+          {
+            "type": "textarea",
+            "id": "answer",
+            "label": "Answer"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,14 @@
+<img src="{{section.settings.logo | img_url : '320x'}}" alt="{{ section.settings.logo.alt | default: shop.name }}">
+
+{% schema %}
+  {
+    "name": "Logo",
+    "settings": [
+      {
+        "type"  : "image_picker",
+        "id"    : "logo",
+        "label" : "Logo"
+      }
+    ]
+  }
+{% endschema %}

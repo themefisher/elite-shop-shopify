@@ -1,0 +1,139 @@
+{% include 'breadcrumb', title: {{blog.title}} %}
+
+
+
+{%- assign number_of_comments = article.comments_count -%}
+{% if comment and comment.status != 'published' %}
+  {% assign number_of_comments = article.comments_count | plus: 1 %}
+{% endif %}
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="post post-single">
+          {% if article.image %}
+          <div class="post-thumb">
+            <img class="img-fluid w-100" src="{{ article | img_url: '1920x' }}" alt="post-thumb">
+          </div>
+          {% endif %}
+          <h2 class="post-title">{{ article.title }}</h2>
+          <div class="post-meta">
+            <ul>
+              <li>
+                <i class="ti-calendar"></i> <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' | upcase }}</time>
+              </li>
+              <li>
+                <i class="ti-user"></i> POSTED BY {{ article.author | upcase }}
+              </li>
+              {% if article.tags.size > 0 %}
+              <li><i class="ti-tag"></i>
+                {% for tag in article.tags %}
+                  <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag | upcase }}</a>
+                  {% unless forloop.last %}, {% endunless %}
+                {% endfor %}
+              </li>
+              {% endif %}
+              {% if blog.comments_enabled? %}
+							<li><i class="ti-comments"></i>
+                <a href="{{ article.url }}#comments">
+                  {{ 'blogs.comments.with_count' | t: count: article.comments_count | upcase }}
+                </a></li>
+              {% endif %}
+            </ul>
+          </div>
+          <div class="post-content post-excerpt mb-5">
+            {{ article.content }}
+          </div>
+          <div class="post-social-share mb-4">
+            <h4 class="post-sub-heading border-bottom pb-3 mb-3">Share this post</h4>
+            <div class="social-media-icons">
+              {% if settings.social_sharing_blog %}
+                {% include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+              {% endif %}
+            </div>
+          </div>
+          
+          {% if blog.comments_enabled? %}
+          <div class="post-comments">
+            <h4 class="post-sub-heading border-bottom pb-3 mb-3">{{ 'blogs.comments.with_count' | t: count: number_of_comments }}</h4>
+            {% paginate article.comments by 5 %}
+            <div id="comments" class="mb-5">
+              {% if comment and comment.status and paginate.current_page == 1 %}
+              <p class="form-success">
+                {% if blog.moderated? and comment.status != 'published' %}
+                  {{ 'blogs.comments.success_moderated' | t }}
+                {% else %}
+                  {{ 'blogs.comments.success' | t }}
+                {% endif %}
+              </p>
+              {% endif %}
+
+              {% if number_of_comments > 0 %}
+              <ul>
+                {% if comment and comment.status != 'published' %}
+                <li id="{{ comment.id }}" class="media">
+                  <div class="mr-2"><i class="ti-comment"></i></div>
+                  <div class="medial-body">
+                    <div>
+                      {{ comment.content }}
+                    </div>
+                    {% capture date %}{{ comment.created_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+                    <p>{{ 'blogs.article.comment_meta_html' | t: author: comment.author, date: date }}</p>
+                  </div>
+                </li>
+                {% endif %}
+
+                {% for comment in article.comments %}
+                <li id="{{ comment.id }}" class="media">
+                  <div class="mr-2"><i class="ti-comment"></i></div>
+                  <div class="medial-body">
+                    <div>
+                      {{ comment.content }}
+                    </div>
+                    {% capture date %}{{ comment.created_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+                    <p>{{ 'blogs.article.comment_meta_html' | t: author: comment.author, date: date }}</p>
+                  </div>
+                </li>
+                {% endfor %}
+
+              </ul>
+              {% if paginate.pages > 1 %}
+              {% include 'pagination' %}
+              {% endif %}
+              {% endif %}
+            </div>
+            {% endpaginate %}
+
+          <div class="post-comments-form">
+            <h4 class="post-sub-heading mb-3">Leave You Comments</h4>
+            {% form 'new_comment', article %}
+              <div class="row">
+                <!-- Name -->
+                <div class="col-md-6 form-group">
+                  <input type="text" name="comment[author]" id="CommentAuthor" class="form-control {% if form.errors contains 'author' %}input-error{% endif %}" placeholder="{{ 'blogs.comments.name' | t }}" value="{{ form.author }}" autocapitalize="words" required>
+                </div>
+                <!-- Email -->
+                <div class="col-md-6 form-group">
+                  <input type="email" name="comment[email]" id="CommentEmail" class="form-control {% if form.errors contains 'email' %}input-error{% endif %}" placeholder="{{ 'blogs.comments.email' | t }}" value="{{ form.email }}" required>
+                </div>
+                <!-- Comment -->
+                <div class="form-group col-md-12">
+                  <textarea name="comment[body]" id="CommentBody" class="form-control {% if form.errors contains 'body' %}input-error{% endif %}" placeholder="{{ 'blogs.comments.message' | t }}">{{ form.body }}</textarea>
+                  {% if blog.moderated? %}
+                    <p>{{ 'blogs.comments.moderated' | t }}</p>
+                  {% endif %}
+                </div>
+                <!-- Send Button -->
+                <div class="form-group col-md-12">
+                  <input type="submit" class="btn btn-primary" value="{{ 'blogs.comments.post' | t }}">
+                </div>
+              </div>
+            {% endform %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

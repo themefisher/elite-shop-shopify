@@ -1,0 +1,299 @@
+{% include 'breadcrumb', title:{{product.title}} %}
+
+<div data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true" itemscope itemtype="http://schema.org/Product">
+
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+
+  <meta itemprop="name" content="{{ product.title }}{% unless product.has_only_default_variant %} - {{ current_variant.title }}{% endunless %}">
+  <meta itemprop="url" content="{{ shop.url }}{{ current_variant.url }}">
+  <meta itemprop="brand" content="{{ product.vendor }}">
+  <meta itemprop="image" content="{{ featured_image | img_url: '600x600' }}">
+  <meta itemprop="description" content="{{ product.description | strip_html | escape }}">
+
+  <!-- product-single -->
+  <section class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <!-- product image slider -->
+          <div class="product-slider">
+            {% if product.images.size > 1 %}
+              {% for image in product.images %}
+                <div data-image="{{ image.src | img_url: '1920x' }}">
+                  <img class="img-fluid w-100 image-zoom" src="{{ image.src | img_url: '1920x' }}" alt="product-img"
+                    data-zoom="{{ image.src | img_url: '1920x' }}">
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        <!-- produt details -->
+        <div class="col-lg-6 mb-100">
+          <form id="product-form" method="post" action="/cart/add" data-cart-submit>
+            <h2>{{ product.title }}</h2>
+            <span data-available-text>
+              {% if current_variant.available %}
+                <p class="text-success mb-0">In Stock</p>
+              {% else %}
+                <p class="text-danger mb-0">Out of Stock</p>
+              {% endif %}
+            </span>
+            <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+            <h4 class="text-primary" data-price-wrapper>
+              <span data-product-price>
+                {{ current_variant.price | money }}
+              </span>
+
+              {% if product.compare_at_price_max > product.price %}
+                <span class="visually-hidden" data-compare-text>{{ 'products.product.regular_price' | t }}</span>
+                <s data-compare-price>
+                  {% if current_variant.compare_at_price > current_variant.price %}
+                    {{ current_variant.compare_at_price | money }}
+                  {% endif %}
+                </s>
+              {% endif %}
+            </h4>
+            {% if product.compare_at_price_max > product.price %}
+              {% assign savedPrice = current_variant.compare_at_price | minus: current_variant.price %}
+              <h5 class="mb-4">You save: 
+                <span class="text-primary" data-saved-price>{{ savedPrice | money }}
+                </span>
+                <span data-saved-percentage>
+                  ({{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | money_without_currency | times: 100 | replace: '.0', ''}}%)
+                </span>
+              </h5>
+            {% endif %}
+            
+            <div class="d-flex flex-column flex-sm-row justify-content-between mb-4">
+              <input id="quantity" class="quantity mr-sm-2 mb-3 mb-sm-0" type="text" value="" name="quantity">
+              {% unless product.has_only_default_variant %}
+                {% for option in product.options_with_values %}
+                    <select id="SingleOptionSelector-{{ forloop.index0 }}" data-single-option-selector data-index="option{{ option.position }}" class="form-control mx-sm-2 mb-3 mb-sm-0" name="color">
+                      {% for value in option.values %}
+                        <option value="{{ value | escape }}"
+                          {% if option.selected_value == value %}selected="selected"{% endif %}>
+                            {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                {% endfor %}
+              {% endunless %}
+
+              <select name="id" class="no-js" data-product-select>
+                {% for variant in product.variants %}
+                  <option
+                    {% if variant == current_variant %}selected="selected"{% endif %}
+                    {% unless variant.available %}disabled="disabled"{% endunless %}
+                    value="{{ variant.id }}">
+                      {{ variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <button
+              type="submit"
+              name="add"
+              class="btn btn-primary mb-4"
+              data-add-to-cart
+              {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                <span data-add-to-cart-text>
+                  {% if current_variant.available %}
+                    {{ 'products.product.add_to_cart' | t }}
+                  {% else %}
+                    {{ 'products.product.sold_out' | t }}
+                  {% endif %}
+                </span>
+            </button>
+          </form>
+          {% comment %} 
+          <h4 class="mb-3"><span class="text-primary">Hurry up!</span> Sale ends in</h4>
+          <!-- syo-timer -->
+          <div class="syotimer dark">
+            <div id="sale-timer" data-year="2020" data-month="5" data-day="1" data-hour="1"></div>
+          </div>
+          {% endcomment %}
+          <hr> 
+          {% if section.settings.show_safe_checkout %}
+            <div class="payment-option border border-primary mt-5 mb-4">
+              <h5 class="bg-white">Guaranted Safe Checkout</h5>
+              <img class="img-fluid w-100 p-3" src="{{ 'all-card.png' | asset_url }}" alt="payment-card">
+            </div>
+          {% endif %}
+          {% if section.settings.show_service_options %}
+            {% if section.settings.service_options_title != blank %}
+              <h5 class="mb-3">{{ section.settings.service_options_title }}</h5>
+            {% endif %}
+            <div class="row">
+              {% for block in section.blocks %}
+              <!-- service item -->
+              <div class="col-lg-3 col-6 mb-4 mb-lg-0">
+                <div class="d-flex">
+                  {% if block.settings.service_option_icon %}
+                  <i class="{{block.settings.service_option_icon}} icon-md mr-3"></i>
+                  {% endif %}
+                  {% if block.settings.service_option_title %}
+                    <div class="align-items-center">
+                      <h6>{{ block.settings.service_option_title }}</h6>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+        <div class="col-lg-12">
+          <div class="product-description mt-5">
+            <h3 class="mb-3">Product Description</h3>
+            {{ product.description }}
+          </div>
+        </div>
+        {% if section.settings.show_share_buttons %}
+          <div class="col-12 mt-3">
+            {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  {% unless product == empty %}
+    <script type="application/json" data-product-json>
+      {{ product | json }}
+    </script>
+  {% endunless %}
+</div>
+
+{% schema %}
+  {
+    "name": "Product pages",
+    "max_blocks"  : 4,
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "show_share_buttons",
+        "label": "Show social sharing buttons",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_safe_checkout",
+        "label": "Show safe checkout",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_service_options",
+        "label": "Show Service Option",
+        "default": true
+      },
+      {
+        "type"  : "text",
+        "id"    : "service_options_title",
+        "label" : "Service Options Title"
+      }
+    ],
+    "blocks"  : [
+      {
+        "name"  : "Product Service Option",
+        "type"  : "service_option",
+        "settings"  : [
+          {
+            "type": "select",
+            "id": "service_option_icon",
+            "options": [
+              { "value": "ti-user", "label": "User"},
+              { "value": "ti-trash", "label": "Trash"},
+              { "value": "ti-target", "label": "Target"},
+              { "value": "ti-tag", "label": "Tag"},
+              { "value": "ti-shopping-cart", "label": "Shopping Cart"},
+              { "value": "ti-shopping-cart-full", "label": "Shopping Cart Full"},
+              { "value": "ti-search", "label": "Search"},
+              { "value": "ti-zoom-in", "label": "Zoom In"},
+              { "value": "ti-zoom-out", "label": "Zoom Out"},
+              { "value": "ti-cut", "label": "Cut"},
+              { "value": "ti-bookmark", "label": "Bookmark"},
+              { "value": "ti-ruler", "label": "Ruler"},
+              { "value": "ti-plus", "label": "Plus"},
+              { "value": "ti-minus", "label": "Minus"},
+              { "value": "ti-close", "label": "Close"},
+              { "value": "ti-pencil", "label": "Pencil"},
+              { "value": "ti-paint-roller", "label": "Paint Roller"},
+              { "value": "ti-paint-bucket", "label": "Paint Bucket"},
+              { "value": "ti-medall-alt", "label": "Medal"},
+              { "value": "ti-marker-alt", "label": "Marker"},
+              { "value": "ti-lock", "label": "Lock"},
+              { "value": "ti-unlock", "label": "Unlock"},
+              { "value": "ti-layers", "label": "Layers"},
+              { "value": "ti-key", "label": "Key"},
+              { "value": "ti-image", "label": "Image"},
+              { "value": "ti-heart", "label": "Heart"},
+              { "value": "ti-eye", "label": "Eye"},
+              { "value": "ti-import", "label": "Import"},
+              { "value": "ti-export", "label": "Export"},
+              { "value": "ti-cup", "label": "Cup"},
+              { "value": "ti-crown", "label": "Crown"},
+              { "value": "ti-clip", "label": "Clip"},
+              { "value": "ti-check-box", "label": "Checkbox"},
+              { "value": "ti-camera", "label": "Camera"},
+              { "value": "ti-announcement", "label": "Announcement"},
+              { "value": "ti-brush-alt", "label": "Brush"},
+              { "value": "ti-briefcase", "label": "Briefcase"},
+              { "value": "ti-blackboard", "label": "Blackboard"},
+              { "value": "ti-bag", "label": "Bag"},
+              { "value": "ti-car", "label": "Car"},
+              { "value": "ti-truck", "label": "Truck"},
+              { "value": "ti-timer", "label": "Timer"},
+              { "value": "ti-ticket", "label": "Ticket"},
+              { "value": "ti-shield", "label": "Sheild"},
+              { "value": "ti-notepad", "label": "Notepad"},
+              { "value": "ti-reload", "label": "Reload"},
+              { "value": "ti-server", "label": "Server"},
+              { "value": "ti-printer", "label": "Printer"},
+              { "value": "ti-package", "label": "Package"},
+              { "value": "ti-mouse", "label": "Mouse"},
+              { "value": "ti-money", "label": "Money"},
+              { "value": "ti-map-alt", "label": "Map"},
+              { "value": "ti-location-pin", "label": "Location Pin"},
+              { "value": "ti-light-bulb", "label": "Light Bulb"},
+              { "value": "ti-id-badge", "label": "Id Badge"},
+              { "value": "ti-headphone", "label": "Headphone"},
+              { "value": "ti-harddrive", "label": "Hard Drive"},
+              { "value": "ti-gift", "label": "Gift"},
+              { "value": "ti-files", "label": "Files"},
+              { "value": "ti-envelope", "label": "Envelope"},
+              { "value": "ti-cloud", "label": "Cloud"},
+              { "value": "ti-bell", "label": "Bell"},
+              { "value": "ti-book", "label": "Book"},
+              { "value": "ti-bar-chart", "label": "Bar Chart"},
+              { "value": "ti-anchor", "label": "Anchor"},
+              { "value": "ti-alert", "label": "Alert"},
+              { "value": "ti-wallet", "label": "Wallet"},
+              { "value": "ti-support", "label": "Support"},
+              { "value": "ti-stamp", "label": "Stamp"},
+              { "value": "ti-pin2", "label": "Pin"},
+              { "value": "ti-help-alt", "label": "Help"},
+              { "value": "ti-face-smile", "label": "Smile Face"},
+              { "value": "ti-face-sad", "label": "Sad Face"},
+              { "value": "ti-credit-card", "label": "Credit Card"},
+              { "value": "ti-time", "label": "Time"},
+              { "value": "ti-rocket", "label": "Rocket"},
+              { "value": "ti-rss", "label": "RSS"},
+              { "value": "ti-control-play", "label": "Play"},
+              { "value": "ti-quote-right", "label": "Quote Right"},
+              { "value": "ti-quote-left", "label": "Quote Left"},
+              { "value": "ti-upload", "label": "Upload"},
+              { "value": "ti-download", "label": "Download"}
+            ],
+            "label": "Service Option Icon"
+          },
+          {
+            "type"  : "text",
+            "id"    : "service_option_title",
+            "label" : "Service Option Title"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,104 @@
+<div class="product text-center">
+  <div class="product-thumb">
+    <div class="overflow-hidden position-relative">
+      <a href="{{product.url}}">
+        {% if product.images.size == 1 %}
+        <img class="img-fluid w-100 mb-3" src="{{  product.images[0] | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+        {% else %}
+        <img class="img-fluid w-100 mb-3 img-first" src="{{  product.images[0] | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape }}">
+        <img class="img-fluid w-100 mb-3 img-second" src="{{  product.images[1] | img_url: 'large' }}" alt="{{ product.featured_image.alt | escape  }}">
+        {% endif %}
+      </a>
+      <div class="btn-cart">
+        <form method="post" action="/cart/add" id="product_form_{{product.id}}" accept-charset="UTF-8" enctype="multipart/form-data" data-cart-submit>
+          {%- assign current_variant = product.selected_or_first_available_variant -%}
+          
+          <input type="hidden" id="product" name="id" value="{{product.variants.first.id}}">
+          <button
+            type="submit"
+            name="add"
+            class="btn btn-primary btn-sm text-white"
+            data-add-to-cart
+            {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+              <span data-add-to-cart-text>
+                {% if current_variant.available %}
+                  {{ 'products.product.add_to_cart' | t }}
+                {% else %}
+                  {{ 'products.product.sold_out' | t }}
+                {% endif %}
+              </span>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="product-hover-overlay">
+      <ul class="list-unstyled">
+        {% comment %} <li><a href="#" class="product-icon" data-toggle="tooltip" data-placement="left"
+          title="Wishlist"><i class="ti-heart"></i></a></li>
+        <li><a href="#" class="product-icon" data-toggle="tooltip" data-placement="left" title="Compare"><i
+          class="ti-direction-alt"></i></a></li> {% endcomment %}
+        <li><a data-vbtype="inline" href="#quickView{{forloop.index}}" class="product-icon venobox" data-toggle="tooltip"
+          data-placement="left" title="Quick View"><i class="ti-search"></i></a></li>
+      </ul>
+      <!-- quickview -->
+      <div id="quickView{{forloop.index}}" class="quickview">
+        <div class="row w-100">
+          <div class="col-lg-6 col-md-6 mb-5 mb-md-0 pl-5 pt-4 pt-lg-0 pl-lg-0">
+            <img src="{{product.featured_image.src | img_url:'1920x'}}" alt="product-img" class="img-fluid">
+          </div>
+          <div class="col-lg-5 col-md-6 text-center text-md-left align-self-center pl-5">
+            <h3 class="mb-lg-2 mb-2">{{ product.title }}</h3>
+            <h5 class="mb-lg-4 mb-3">
+              {{product.price | money}}
+              {% if product.compare_at_price %}
+              <s>{{product.compare_at_price | money}}</s>
+              {% endif %}
+            </h5>
+            <p class="mb-lg-4 mb-3 text-gray">
+              {{ product.description }}
+            </p>
+            <form method="post" action="/cart/add" id="quick_form_{{product.id}}" accept-charset="UTF-8" enctype="multipart/form-data" data-cart-submit>
+              {%- assign current_variant = product.selected_or_first_available_variant -%}
+              
+              <input type="hidden" id="product" name="id" value="{{product.variants.first.id}}">
+              <button
+                type="submit"
+                name="add"
+                class="btn btn-primary"
+                data-add-to-cart
+                {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                  <span data-add-to-cart-text>
+                    {% if current_variant.available %}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {% else %}
+                      {{ 'products.product.sold_out' | t }}
+                    {% endif %}
+                  </span>
+              </button>
+            </form>
+            {% if section.settings.show_share_buttons %}
+              <div class="col-12 mt-3">
+                {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- /quickview -->
+    </div>
+  </div>
+  <div class="product-info">
+    <h3 class="h5"><a class="text-color" href="{{product.url}}">{{product.title}}</a></h3>
+    <span class="h5">{{product.price | money}}
+    {% if product.compare_at_price %}
+    <s>{{product.compare_at_price | money}}</s>
+    {% endif %}</span>
+  </div>
+  <!-- product label badge -->
+  {% if product.compare_at_price_max > product.price %}
+  {% assign savedPrice = current_variant.compare_at_price | minus: current_variant.price %}
+  <div class="product-label sale">
+    -{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | money_without_currency | times: 100 | replace: '.0', ''}}%
+  </div>
+  {% endif %}
+</div>

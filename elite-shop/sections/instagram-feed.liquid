@@ -1,0 +1,61 @@
+<section class="section overflow-hidden" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        {% if section.settings.section_title != blank %}
+          <h2 class="mb-2">{{ section.settings.section_title }}</h2>
+        {% endif %}
+        {% if section.settings.instagram_username != blank %}
+          <p class="mb-5">@{{ section.settings.instagram_username }}</p>
+        {% endif %}
+      </div>
+      <div class="col-12">
+        {% if section.settings.instagram_userId != blank and section.settings.instagram_accessToken != blank and section.settings.number_of_posts != blank %}
+          <div class="instagram-slider" id="instafeed" data-userId="{{ section.settings.instagram_userId }}" data-accessToken="{{ section.settings.instagram_accessToken }}" data-postNumber="{{ section.settings.number_of_posts }}"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+{% schema %}
+  {
+    "name": "Instagram Feed",
+    "settings": [{
+        "type": "text",
+        "id": "section_title",
+        "label": "Section Title"
+      },
+      {
+        "type": "text",
+        "id": "instagram_username",
+        "label": "Instagram Username"
+      },
+      {
+        "type": "text",
+        "id": "instagram_userId",
+        "label": "Instagram UserID"
+      },
+      {
+        "type": "text",
+        "id": "instagram_accessToken",
+        "label": "Instagram Access Token"
+      },
+      {
+        "type": "range",
+        "id": "number_of_posts",
+        "label": "Number of Posts",
+        "min": 4,
+        "max": 16,
+        "step": 1,
+        "default": 10
+      }
+    ],
+    "presets": [{
+      "name": "Instagram Feed",
+      "category": "Social"
+    }]
+  }
+{% endschema %}

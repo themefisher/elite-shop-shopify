@@ -1,0 +1,78 @@
+{% include 'breadcrumb', title: {{page.title}} %}
+
+{% if settings.latitude != blank and settings.longitude != blank %}
+<!-- google map -->
+<section class="map">
+  <!-- Google Map -->
+  <div id="map_canvas" data-latitude="{{settings.latitude}}" data-longitude="{{settings.longitude}}" data-marker="{{'marker.png' | asset_url}}"></div>
+</section>
+<!-- /google map -->
+{% endif %}
+
+<!-- contact -->
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-between">
+      <!-- form -->
+      <div class="col-lg-7 mb-5 mb-lg-0 text-center text-md-left">
+        <h2 class="section-title">Contact Us</h2>
+        {% form 'contact' %}
+        {% if form.posted_successfully? %}
+          <p class="note form-success">Thank you for contacting us!</p>
+        {% endif %}
+
+        <div class="row">
+          <div class="col-md-6">
+            <input type="text" id="name" name="contact[name]" class="form-control mb-4 rounded-0" placeholder="Name" required>
+          </div>
+          <div class="col-md-6">
+            <input type="email" id="email" name="contact[email]" class="form-control mb-4 rounded-0" placeholder="Email" required>
+          </div>
+          <div class="col-md-12">
+            <input type="text" id="subject" name="contact[subject]" class="form-control mb-4 rounded-0" placeholder="Subject" required>
+          </div>
+          <div class="col-md-12">
+            <textarea name="contact[message]" id="message" class="form-control rounded-0 mb-4" placeholder="Message"></textarea>
+          </div>
+          <div class="col-md-12">
+            <input type="submit" class="btn btn-primary" value="Submit Now">
+          </div>
+        </div>
+        {% endform %}
+      </div>
+      <!-- contact item -->
+      <div class="col-lg-4">
+        {% if settings.location != blank %}
+        <div class="d-flex mb-60">
+          <i class="ti-location-pin contact-icon"></i>
+          <div>
+            <h4>Our Location</h4>
+            <p class="text-gray">{{settings.location}}</p>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if settings.phone != blank %}
+        <div class="d-flex mb-60">
+          <i class="ti-mobile contact-icon"></i>
+          <div>
+            <h4>Call Us Now</h4>
+            <p class="text-gray mb-0">{{settings.phone}}</p>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if settings.email != blank %}
+        <div class="d-flex mb-60">
+          <i class="ti-email contact-icon"></i>
+          <div>
+            <h4>Write Us Now</h4>
+            <p class="text-gray mb-0">{{settings.email}}</p>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /contact -->

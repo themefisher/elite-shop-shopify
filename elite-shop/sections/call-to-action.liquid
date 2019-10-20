@@ -1,0 +1,54 @@
+<section class="section overlay cta" data-section-id="{{ section.id }}" {% if section.settings.cta_bg %}style="background-image: url('{{ section.settings.cta_bg | img_url: '1920x' }}');" {% endif %}>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        {% if section.settings.cta_title != blank %}
+          <h1 class="text-white mb-2">{{ section.settings.cta_title }}</h1>
+        {% endif %}
+        {% if section.settings.cta_subtitle != blank %}
+          <p class="text-white mb-4">{{ section.settings.cta_subtitle }}</p>
+        {% endif %}
+        {% if section.settings.btn_url != blank %}
+          <a href="{{ section.settings.btn_url }}" class="btn btn-light">{{ section.settings.btn_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Call to Action",
+    "settings": [{
+        "type": "image_picker",
+        "id": "cta_bg",
+        "label": "Choose Backgroud Image"
+      },
+      {
+        "type": "text",
+        "id": "cta_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "cta_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "btn_text",
+        "label": "Button Text"
+      },
+      {
+        "type": "url",
+        "id": "btn_url",
+        "label": "Button Url"
+      }
+    ],
+    "presets": [{
+      "name": "Call to Action",
+      "category": "Layout"
+    }]
+  }
+{% endschema %}

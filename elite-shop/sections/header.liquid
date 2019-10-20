@@ -1,0 +1,225 @@
+<style>
+  {% if section.settings.logo != blank %}
+    .site-header__logo-image {
+      max-width: {{ section.settings.logo_max_width }}px;
+    }
+  {% endif %}
+</style>
+<div data-section-id="{{ section.id }}" data-section-type="header-section">
+  <!-- header -->
+  <header>
+    <!-- top header -->
+    <div class="top-header">
+      <div class="row">
+        <div class="col-lg-6 text-center text-lg-left">
+          {% if section.settings.top_feature_text != blank %}
+            <p class="text-white mb-lg-0 mb-1">{{ section.settings.top_feature_text }}</p>
+          {% endif %}
+        </div>
+        <div class="col-lg-6 text-center text-lg-right">
+          <ul class="list-inline">
+            <li class="list-inline-item"><img src="{{'flag.jpg' | asset_url }}" alt="flag"></li>
+            <li class="list-inline-item"><a href="/account">My Accounts</a></li>
+            <li class="list-inline-item">
+              <form action="#">
+                <select class="country" name="country">
+                  <option value="USD">USD</option>
+                  <option value="JPN">JPN</option>
+                  <option value="BAN">BAN</option>
+                </select>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- /top-header -->
+  </header>
+
+  <!-- navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" id="navbar">
+    <a class="navbar-brand order-2 order-lg-1 {% if section.settings.logo != blank %} site-header__logo-image{% endif %}" href="/">
+      {% if section.settings.logo %}
+        <img src="{{ section.settings.logo | img_url: image_size }}"
+          srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+          alt="{{ section.settings.logo.alt | default: shop.name }}"
+          itemprop="logo">
+      {% else %}
+        {{ shop.name }}
+      {% endif %}
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse order-1 order-lg-2" id="navbarSupportedContent">
+      <ul class="navbar-nav mx-auto">
+        {% for link in linklists[section.settings.main_linklist].links %}
+        {% if link.links == blank %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ link.url }}">{{ link.title }}</a>
+        </li>
+        {% else %}
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="shop.html" role="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{ link.title }}
+          </a>
+          <div class="dropdown-menu">
+            {% for childlink in link.links %}
+            <a class="dropdown-item" href="{{ childlink.url }}">{{ childlink.title }}</a>
+            {% endfor %}
+          </div>
+        </li>
+        {% endif %}
+        {% endfor %}
+        {% if section.settings.show_megamenu %}
+        <li class="nav-item dropdown mega-dropdown">
+          {% if section.settings.megamenu_title != blank %}
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            {{ section.settings.megamenu_title }}
+          </a>
+          {% endif %}
+          <div class="dropdown-menu mega-menu">
+            {% for link in linklists[section.settings.megamenu_linklist].links %}
+            {% if link.links == blank %}
+            <div class="mx-3 mega-menu-item">
+              <h6><a href="{{link.url}}">{{ link.title }}</a></h6>
+            </div>
+            {% else %}
+            <div class="mx-3 mega-menu-item">
+              <h6>{{ link.title }}</h6>
+              <ul class="pl-0">
+                {% for childlink in link.links %}
+                <li><a href="{{ childlink.url }}">{{ childlink.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if section.settings.megamenu_image %}
+            <div class="mx-3 mega-megu-image">
+              <img class="img-fluid h-100" src="{{ section.settings.megamenu_image | img_url : '320x' }}"
+                alt="megamenu-image">
+            </div>
+            {% endif %}
+          </div>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="order-3 navbar-right-elements">
+      <div class="search-cart">
+        <!-- search -->
+        <div class="search">
+          <button id="searchOpen" class="search-btn"><i class="ti-search"></i></button>
+          <div class="search-wrapper">
+            <form action="/search" method="get">
+              <input class="search-box" id="Search" name="q" type="search"
+                placeholder="{{ 'general.search.placeholder' | t }}">
+              <button class="search-icon" type="submit"><i class="ti-search"></i></button>
+            </form>
+          </div>
+        </div>
+        <!-- cart -->
+        <div class="cart" id="cart">
+          <button id="cartOpen" class="cart-btn"><i class="ti-bag"></i><span
+              class="d-xs-none">CART</span> <span data-cart-render="item_count"></span></button>
+          <div class="cart-wrapper" data-cart-view="data-cart-view">
+            <i id="cartClose" class="ti-close cart-close"></i>
+            <div class="empty-cart text-center" rv-show="cart.item_count | lt 1">
+              <div class="empty-cart-icon">
+                <i class="ti-shopping-cart icon-lg"></i>
+              </div>
+              <h2 class="mb-3">Your Cart is now empty</h2>
+              <a href="/collections/all" class="btn btn-primary btn-sm">Shop Now</a>
+            </div>
+            <div rv-show="cart.item_count | gt 0">
+              <div class="d-flex justify-content-between">
+                <h4 class="mb-4">Your Cart</h4>
+                <a data-cart-clear>Clear Cart</a>
+              </div>
+              <ul class="pl-0 mb-3">
+                <li class="d-flex border-bottom" rv-each-item="cart.items">
+                  <div><img width="80" class="img-fluid" rv-src="item.image | productImageSize '156x'"></div>
+                  <div class="mx-3">
+                    <h6><a class="text-dark" rv-href="item.url" rv-text="item.title"></a></h6>
+                    <span rv-text="item.quantity"></span> X <span
+                      rv-html="item.price | money Currency.currentCurrency"></span></span>
+                  </div>
+                  <a class="text-dark" href="#" rv-data-cart-remove="index | plus 1"><i class="ti-close"></i></a>
+                </li>
+              </ul>
+              <div class="mb-3">
+                <span>Cart Total</span>
+                <span class="float-right" rv-html="cart.total_price | money Currency.currentCurrency"></span>
+              </div>
+              <div class="text-center">
+                <a href="/cart" class="btn btn-dark btn-mobile rounded-0">view cart</a>
+                <a href="/checkout" class="btn btn-dark btn-mobile rounded-0">check out</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </nav>
+    <!-- /navigation -->
+    </div>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type"  : "text",
+        "id"    : "top_feature_text",
+        "label" : "Top Header Feature Text"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "range",
+        "id": "logo_max_width",
+        "min": 50,
+        "max": 450,
+        "step": 10,
+        "unit": "px",
+        "label": "Custom logo width",
+        "default": 250
+      },
+      {
+        "type": "link_list",
+        "id": "main_linklist",
+        "label": "Menu",
+        "default": "main-menu"
+      },
+      {
+        "type"  : "checkbox",
+        "id"    : "show_megamenu",
+        "label" : "Show Megamenu",
+        "default" : true
+      },
+      {
+        "type"  : "text",
+        "id"    : "megamenu_title",
+        "label" : "Megamenu Title"
+      },
+      {
+        "type": "link_list",
+        "id": "megamenu_linklist",
+        "label": "Mega Menu"
+      },
+      {
+        "type"  : "image_picker",
+        "id"    : "megamenu_image",
+        "label" : "Megamenu Image"
+      }
+    ]
+  }
+{% endschema %}

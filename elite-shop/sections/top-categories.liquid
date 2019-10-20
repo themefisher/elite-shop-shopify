@@ -1,0 +1,65 @@
+<!-- categories -->
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-12 text-center">
+        <h2 class="section-title">{{section.settings.section_title}}</h2>
+      </div>
+      {% for block in section.blocks %}
+      {%- assign collection = collections[block.settings.collection] -%}
+      <!-- categories item -->
+      <div class="col-lg-4 col-md-6 mb-50">
+        <div class="card p-0">
+          {% if collection.products.first != blank %}
+          {% assign first_product = collection.products.first %}
+          <div class="border-bottom text-center hover-zoom-img">
+            <a href="{{first_product.url}}"><img src="{{ first_product.featured_image.src | img_url: '1920x' }}" class="rounded-top img-fluid w-100"></a>
+          </div>
+          {% endif %}
+          <ul class="d-flex list-unstyled pl-0 categories-list">
+            {% for product in collection.products %}
+            {% if forloop.first != true and forloop.index < 5 %}
+            <li class="m-0 hover-zoom-img">
+              <a href="{{product.url}}"><img src="{{product.featured_image.src | img_url : '1920x'}}" class="img-fluid w-100"></a>
+            </li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+          <div class="px-4 py-3 border-top">
+            <h4 class="d-inline-block mb-0 mt-1">{{collection.title}}</h4>
+            <a href="{{collection.url}}" class="btn btn-sm btn-outline-primary float-right">view more</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- /categories -->
+
+
+
+{% schema %}
+  {
+    "name": "Top Categories",
+    "settings": [{
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default" : "Top Categories"
+    }],
+    "blocks": [{
+      "type": "collection_item",
+      "name": "Collection Item",
+      "settings": [{
+        "type": "collection",
+        "id": "collection",
+        "label": "Collection"
+      }]
+    }],
+    "presets": [{
+      "name": "Top Categories",
+      "category": "Collection"
+    }]
+  }
+{% endschema %}

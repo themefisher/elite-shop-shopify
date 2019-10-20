@@ -1,0 +1,71 @@
+{% include 'breadcrumb', title: "Cart" %}
+
+<div class="section">
+  <div class="cart shopping">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-10 mx-auto">
+          <div class="block">
+          {% if cart.item_count == 0 %}
+          <div class="text-center">
+            <div class="empty-cart-icon">
+              <i class="ti-shopping-cart icon-lg"></i>
+            </div>
+            <h2 class="mb-3">Your Cart is now empty</h2>
+            <a href="/collections/all" class="btn btn-primary">Shop Now</a>
+          </div>
+          {% else %}
+            <div class="product-list">
+              <form method="post" action="/cart" novalidate>
+                <div class="table-responsive">
+                  <table class="table cart-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Sub Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for line_item in cart.items %}
+                      <tr>
+                        <td>
+                          <a class="product-remove" href="/cart/change?line={{forloop.index}}&quantity=0" rel="{{line_item.id}}">&times;</a>
+                        </td>
+                        <td>
+                          <div class="product-info">
+                            <img width="80" class="img-fluid" src="{{line_item.image | product_img_url: '1920x'}}">
+                            <a href="{{line_item.url}}">{{line_item.title}}</a>
+                          </div>
+                        </td>
+                        <td>{{line_item.product.price | money}}</td>
+                        <td><input id="quantity" class="quantity mr-sm-2" type="text" value="{{line_item.quantity}}" name="updates[]"></td>
+                        <td>{{line_item.line_price | money}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-12 text-right">
+                    <p>Sub Total <span class="d-inline-block w-100px">{{cart.total_price | money}}</span></p>
+                    <p>Taxes and shipping calculated at checkout</p>
+                  <hr>
+                  </div>
+                  <div class="col-12 text-right">
+                    <input type="submit" name="update" id="update-btn" value="Update Cart" class="btn ml-md-4 btn-dark">
+                    <input type="submit" name="checkout" value="Checkout" class="btn btn-primary">
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

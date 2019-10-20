@@ -1,0 +1,263 @@
+
+{% assign product_per_page = 6 %}
+{% paginate collection.products by product_per_page %}
+<!-- shop -->
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <!-- top bar -->
+      <div class="col-lg-12 mb-50">
+        <div class="d-flex border">
+          <div class="flex-basis-15 p-2 p-sm-4 border-right text-center">
+            <a class="text-color d-inline-block px-1 grid-btn"><i class="ti-layout-grid3-alt"></i></a>
+            <a class="text-gray d-inline-block px-1 list-btn"><i class="ti-view-list-alt"></i></a>
+          </div>
+          <div class="flex-basis-55 p-2 p-sm-4 align-self-sm-center">
+            <p class="text-gray mb-0">Showing <span class="text-color">{{ paginate.current_offset | plus: 1 }}-{% if paginate.next %}{{ paginate.current_offset | plus: paginate.page_size }}{% else %}{{ paginate.items }}{% endif %} of {{ collection.all_products_count }}</span> Results</p>
+          </div>
+          <div class="flex-basis-15 p-2 p-sm-4 border-right border-left text-center">
+            <select class="select" id="tag" onchange="javascript:location.href = this.value;">
+              {% for tag in collection.all_tags %}
+              <option value="/collections/all/{{ tag }}" selected>{{ tag }}</option>
+              {% endfor %}
+              <option selected="selected">Tags</option>
+            </select>
+          </div>
+          <form id="collection-form" method="get" action="{{ collection.url }}">
+            <div class="flex-basis-15 p-2 p-sm-4 text-center">
+              {% assign current_sort_by = collection.sort_by | default: collection.default_sort_by %}
+              <select id="sort_by" name="sort_by" class="select" data-update-collection onchange="shortBy(this)">
+                <option value="title-ascending" {% if current_sort_by == 'title-ascending' %}selected="selected"{% endif %}>A-Z</option>
+                <option value="title-descending" {% if current_sort_by == 'title-descending' %}selected="selected"{% endif %}>Z-A</option>
+                <option value="price-ascending" {% if current_sort_by == 'price-ascending' %}selected="selected"{% endif %}>Price: Low to High</option>
+                <option value="price-descending" {% if current_sort_by == 'price-descending' %}selected="selected"{% endif %}>Price: High to Low</option>
+                <option value="created-ascending" {% if current_sort_by == 'created-ascending' %}selected="selected"{% endif %}>Oldest to Newest</option>
+                <option value="created-descending" {% if current_sort_by == 'created-descending' %}selected="selected"{% endif %}>Newest to Oldest</option>
+                <option value="best-selling" {% if current_sort_by == 'best-selling' %}selected="selected"{% endif %}>Best Selling</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- sidebar -->
+      <div class="col-lg-3">
+        <!-- search product -->
+        <div class="position-relative mb-5">
+        </div>
+        <!-- categories -->
+        <div class="mb-30">
+          <h4 class="mb-3">Shop by Categories</h4>
+          <ul class="pl-0 shop-list list-unstyled">
+            {% for link in linklists[section.settings.category].links %}
+            <li>
+              <a href="{{ link.url }}" class="d-flex py-2 text-gray justify-content-between">
+                <span>{{ link.title }}</span><span> {{ link.all_products_count }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- price range -->
+        {% comment %} <div class="mb-30">
+          <h4 class="mb-4">Shop by Price</h4>
+          <input class="range-track" type="text" data-slider-min="0" data-slider-max="1000" data-slider-step="5"
+            data-slider-value="[0,300]" />
+          <div class="d-flex justify-content-between">
+            <button class="btn btn-sm btn-primary">Filter</button>
+            <span class="value">$0 - $300</span>
+          </div>
+        </div> {% endcomment %}
+        <!-- size checkbox -->
+        <div class="mb-30">
+          <h4 class="mb-3">Shop by Size</h4>
+          {% assign sizes = '' %}
+          {% for product in products limit: limit %}
+          {% for variant in product.variants %}
+          {% if variant.available %}
+          {% assign sizes = sizes | append: variant.options[0] | append: '_' %}
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+
+          {% assign sizesArr = sizes | split: '_' | uniq %}
+          <ul class="list-unstyled">
+            {% for size in sizesArr %}
+            <li class="py-2 text-gray">{{ size | link_to_tag: size }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- color selector -->
+        <div class="color">
+          <h4 class="mb-3">Shop by Color</h4>
+          {% assign colors = '' %}
+          {% for product in products limit: limit %}
+          {% for variant in product.variants %}
+          {% if variant.available %}
+          {% assign colors = colors | append: variant.options[1] | append: '_' %}
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+
+          {% assign colorsArr = colors | split: '_' | uniq %}
+          <ul class="list-unstyled">
+            {% for color in colorsArr %}
+            <li class="py-2 text-gray">{{ color | link_to_tag: color }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- product-list -->
+        <div class="col-lg-9">
+          <div class="row">
+            {% for product in collection.products %}
+            <!-- product -->
+            <div class="col-lg-4 col-sm-6 mb-4 grid-view d-block">
+            {% include 'product'%}
+            </div>
+            <!-- //end of product -->
+            <!-- product -->
+            <div class="col-12 mb-4 list-view d-none">
+              <div class="product">
+                <div class="row align-items-center">
+                  <div class="col-sm-4">
+                    <div class="product-thumb position-relative text-center">
+                      <div class="overflow-hidden position-relative">
+                        <a href="{{product.url}}">
+                        {% if product.images.size == 1 %}
+                        <img class="img-fluid w-100 mb-3" src="{{  product.images[0] | img_url: 'large' }}"
+                          alt="{{ product.featured_image.alt | escape }}">
+                        {% else %}
+                        <img class="img-fluid w-100 mb-3 img-first" src="{{  product.images[0] | img_url: 'large' }}"
+                          alt="{{ product.featured_image.alt | escape }}">
+                        <img class="img-fluid w-100 mb-3 img-second" src="{{  product.images[1] | img_url: 'large' }}"
+                          alt="{{ product.featured_image.alt | escape  }}">
+                        {% endif %}
+                      </a>
+                      </div>
+                      <div class="product-hover-overlay">
+                        <ul class="list-unstyled">
+                          {% comment %} <li><a href="#" class="product-icon" data-toggle="tooltip" data-placement="left"
+                              title="Wishlist"><i class="ti-heart"></i></a></li>
+                          <li><a href="#" class="product-icon" data-toggle="tooltip" data-placement="left"
+                              title="Compare"><i class="ti-direction-alt"></i></a></li> {% endcomment %}
+                          <li><a data-vbtype="inline" href="#quickView{{forloop.index}}" class="product-icon venobox"
+                              data-toggle="tooltip" data-placement="left" title="Quick View"><i class="ti-search"></i></a>
+                          </li>
+                        </ul>
+                      <!-- quickview -->
+                      <div id="quickView{{forloop.index}}" class="quickview">
+                        <div class="row w-100">
+                          <div class="col-lg-6 col-md-6 mb-5 mb-md-0 pl-5 pt-4 pt-lg-0 pl-lg-0">
+                            <img src="{{product.featured_image.src | img_url:'1920x'}}" alt="product-img" class="img-fluid">
+                          </div>
+                          <div class="col-lg-5 col-md-6 text-center text-md-left align-self-center pl-5">
+                            <h3 class="mb-lg-2 mb-2">{{ product.title }}</h3>
+                            <h5 class="mb-lg-4 mb-3">
+                              {{product.price | money}}
+                              {% if product.compare_at_price %}
+                              <s>{{product.compare_at_price | money}}</s>
+                              {% endif %}
+                            </h5>
+                            <p class="mb-lg-4 mb-3 text-gray">
+                              {{ product.description }}
+                            </p>
+                            <form method="post" action="/cart/add" id="quick_form_{{product.id}}" accept-charset="UTF-8" enctype="multipart/form-data" data-cart-submit>
+                              {%- assign current_variant = product.selected_or_first_available_variant -%}
+                              
+                              <input type="hidden" id="product" name="id" value="{{product.variants.first.id}}">
+                              <button
+                                type="submit"
+                                name="add"
+                                class="btn btn-primary"
+                                data-add-to-cart
+                                {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                                  <span data-add-to-cart-text>
+                                    {% if current_variant.available %}
+                                      {{ 'products.product.add_to_cart' | t }}
+                                    {% else %}
+                                      {{ 'products.product.sold_out' | t }}
+                                    {% endif %}
+                                  </span>
+                              </button>
+                            </form>
+                            {% if section.settings.show_share_buttons %}
+                            <div class="col-12 mt-3">
+                              {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                      <!-- /quickview -->
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-8">
+                    <div class="product-info">
+                      <h3 class="mb-md-4 mb-3"><a class="text-color" href="{{product.url}}">{{product.title}}</a></h3>
+                      <p class="mb-md-4 mb-3">{{ product.description }}</p>
+                      <span class="h4">{{product.price | money}}
+                        {% if product.compare_at_price %}
+                        <s>{{product.compare_at_price | money}}</s>
+                        {% endif %}
+                      </span>
+                      <form class="mt-3" method="post" action="/cart/add" id="product_form_{{product.id}}" accept-charset="UTF-8" enctype="multipart/form-data" data-cart-submit>
+                        {%- assign current_variant = product.selected_or_first_available_variant -%}
+                        
+                        <input type="hidden" id="product" name="id" value="{{product.variants.first.id}}">
+                        <button
+                          type="submit"
+                          name="add"
+                          class="btn btn-primary btn-sm text-white"
+                          data-add-to-cart
+                          {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                            <span data-add-to-cart-text>
+                              {% if current_variant.available %}
+                                {{ 'products.product.add_to_cart' | t }}
+                              {% else %}
+                                {{ 'products.product.sold_out' | t }}
+                              {% endif %}
+                            </span>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <!-- product label badge -->
+                {% if product.compare_at_price_max > product.price %}
+                {% assign savedPrice = current_variant.compare_at_price | minus: current_variant.price %}
+                <div class="product-label sale">
+                  -{{ current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | money_without_currency | times: 100 | replace: '.0', ''}}%
+                </div>
+                {% endif %}
+              </div>
+            </div>
+            <!-- //end of product -->
+            {% endfor %}
+          </div>
+          {% if paginate.pages > 1 %}
+          {% include 'pagination' %}
+          {% endif %}
+          {% endpaginate %}
+        </div>
+    </div>
+  </div>
+</section>
+<!-- /shop -->
+<script type="text/javascript">
+function shortBy(el){
+sel = el.options[el.selectedIndex].value;
+	el.form.submit();
+}
+</script>
+
+{% schema %}
+{
+  "name": "collection Page",
+  "settings": [{
+    "type": "link_list",
+    "id": "category",
+    "label": "Categories"
+  }]
+}
+{% endschema %}

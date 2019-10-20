@@ -1,0 +1,382 @@
+<section class="section-sm border-top" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="row">
+      {% for block in section.blocks %}
+      <div class="col-lg-3 col-sm-6 mb-4 mb-lg-0">
+        <div class="d-flex flex-sm-row flex-column align-items-center align-items-sm-start">
+          {% if block.settings.service_icon != blank%}
+          <i class="{{block.settings.service_icon}} icon-lg mr-4 mb-3 mb-sm-0"></i>
+          {% endif %}
+          <div class="text-center text-sm-left">
+            {% if block.settings.service_title != blank %}
+            <h4>{{block.settings.service_title}}</h4>
+            {% endif %}
+            {% if block.settings.service_description != blank %}
+            <p class="mb-0 text-gray">{{block.settings.service_description}}</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Service",
+    "blocks": [{
+      "type": "service_item",
+      "name": "Service Item",
+      "settings": [{
+          "type": "select",
+          "id": "service_icon",
+          "options": [{
+              "value": "ti-user",
+              "label": "User"
+            },
+            {
+              "value": "ti-trash",
+              "label": "Trash"
+            },
+            {
+              "value": "ti-target",
+              "label": "Target"
+            },
+            {
+              "value": "ti-tag",
+              "label": "Tag"
+            },
+            {
+              "value": "ti-shopping-cart",
+              "label": "Shopping Cart"
+            },
+            {
+              "value": "ti-shopping-cart-full",
+              "label": "Shopping Cart Full"
+            },
+            {
+              "value": "ti-search",
+              "label": "Search"
+            },
+            {
+              "value": "ti-zoom-in",
+              "label": "Zoom In"
+            },
+            {
+              "value": "ti-zoom-out",
+              "label": "Zoom Out"
+            },
+            {
+              "value": "ti-cut",
+              "label": "Cut"
+            },
+            {
+              "value": "ti-bookmark",
+              "label": "Bookmark"
+            },
+            {
+              "value": "ti-ruler",
+              "label": "Ruler"
+            },
+            {
+              "value": "ti-reload",
+              "label": "Reload"
+            },
+            {
+              "value": "ti-plus",
+              "label": "Plus"
+            },
+            {
+              "value": "ti-minus",
+              "label": "Minus"
+            },
+            {
+              "value": "ti-close",
+              "label": "Close"
+            },
+            {
+              "value": "ti-pencil",
+              "label": "Pencil"
+            },
+            {
+              "value": "ti-paint-roller",
+              "label": "Paint Roller"
+            },
+            {
+              "value": "ti-paint-bucket",
+              "label": "Paint Bucket"
+            },
+            {
+              "value": "ti-medall-alt",
+              "label": "Medal"
+            },
+            {
+              "value": "ti-marker-alt",
+              "label": "Marker"
+            },
+            {
+              "value": "ti-lock",
+              "label": "Lock"
+            },
+            {
+              "value": "ti-unlock",
+              "label": "Unlock"
+            },
+            {
+              "value": "ti-layers",
+              "label": "Layers"
+            },
+            {
+              "value": "ti-key",
+              "label": "Key"
+            },
+            {
+              "value": "ti-image",
+              "label": "Image"
+            },
+            {
+              "value": "ti-heart",
+              "label": "Heart"
+            },
+            {
+              "value": "ti-eye",
+              "label": "Eye"
+            },
+            {
+              "value": "ti-import",
+              "label": "Import"
+            },
+            {
+              "value": "ti-export",
+              "label": "Export"
+            },
+            {
+              "value": "ti-cup",
+              "label": "Cup"
+            },
+            {
+              "value": "ti-crown",
+              "label": "Crown"
+            },
+            {
+              "value": "ti-clip",
+              "label": "Clip"
+            },
+            {
+              "value": "ti-check-box",
+              "label": "Checkbox"
+            },
+            {
+              "value": "ti-camera",
+              "label": "Camera"
+            },
+            {
+              "value": "ti-announcement",
+              "label": "Announcement"
+            },
+            {
+              "value": "ti-brush-alt",
+              "label": "Brush"
+            },
+            {
+              "value": "ti-briefcase",
+              "label": "Briefcase"
+            },
+            {
+              "value": "ti-blackboard",
+              "label": "Blackboard"
+            },
+            {
+              "value": "ti-bag",
+              "label": "Bag"
+            },
+            {
+              "value": "ti-car",
+              "label": "Car"
+            },
+            {
+              "value": "ti-truck",
+              "label": "Truck"
+            },
+            {
+              "value": "ti-timer",
+              "label": "Timer"
+            },
+            {
+              "value": "ti-ticket",
+              "label": "Ticket"
+            },
+            {
+              "value": "ti-shield",
+              "label": "Sheild"
+            },
+            {
+              "value": "ti-notepad",
+              "label": "Notepad"
+            },
+            {
+              "value": "ti-server",
+              "label": "Server"
+            },
+            {
+              "value": "ti-printer",
+              "label": "Printer"
+            },
+            {
+              "value": "ti-package",
+              "label": "Package"
+            },
+            {
+              "value": "ti-mouse",
+              "label": "Mouse"
+            },
+            {
+              "value": "ti-money",
+              "label": "Money"
+            },
+            {
+              "value": "ti-map-alt",
+              "label": "Map"
+            },
+            {
+              "value": "ti-location-pin",
+              "label": "Location Pin"
+            },
+            {
+              "value": "ti-light-bulb",
+              "label": "Light Bulb"
+            },
+            {
+              "value": "ti-id-badge",
+              "label": "Id Badge"
+            },
+            {
+              "value": "ti-headphone",
+              "label": "Headphone"
+            },
+            {
+              "value": "ti-harddrive",
+              "label": "Hard Drive"
+            },
+            {
+              "value": "ti-gift",
+              "label": "Gift"
+            },
+            {
+              "value": "ti-files",
+              "label": "Files"
+            },
+            {
+              "value": "ti-envelope",
+              "label": "Envelope"
+            },
+            {
+              "value": "ti-cloud",
+              "label": "Cloud"
+            },
+            {
+              "value": "ti-bell",
+              "label": "Bell"
+            },
+            {
+              "value": "ti-book",
+              "label": "Book"
+            },
+            {
+              "value": "ti-bar-chart",
+              "label": "Bar Chart"
+            },
+            {
+              "value": "ti-anchor",
+              "label": "Anchor"
+            },
+            {
+              "value": "ti-alert",
+              "label": "Alert"
+            },
+            {
+              "value": "ti-wallet",
+              "label": "Wallet"
+            },
+            {
+              "value": "ti-support",
+              "label": "Support"
+            },
+            {
+              "value": "ti-stamp",
+              "label": "Stamp"
+            },
+            {
+              "value": "ti-pin2",
+              "label": "Pin"
+            },
+            {
+              "value": "ti-help-alt",
+              "label": "Help"
+            },
+            {
+              "value": "ti-face-smile",
+              "label": "Smile Face"
+            },
+            {
+              "value": "ti-face-sad",
+              "label": "Sad Face"
+            },
+            {
+              "value": "ti-credit-card",
+              "label": "Credit Card"
+            },
+            {
+              "value": "ti-time",
+              "label": "Time"
+            },
+            {
+              "value": "ti-rocket",
+              "label": "Rocket"
+            },
+            {
+              "value": "ti-rss",
+              "label": "RSS"
+            },
+            {
+              "value": "ti-control-play",
+              "label": "Play"
+            },
+            {
+              "value": "ti-quote-right",
+              "label": "Quote Right"
+            },
+            {
+              "value": "ti-quote-left",
+              "label": "Quote Left"
+            },
+            {
+              "value": "ti-upload",
+              "label": "Upload"
+            },
+            {
+              "value": "ti-download",
+              "label": "Download"
+            }
+          ],
+          "label": "Service Icon"
+        },
+        {
+          "type": "text",
+          "id": "service_title",
+          "label": "Service Title"
+        },
+        {
+          "type": "textarea",
+          "id": "service_description",
+          "label": "Service Description"
+        }
+      ]
+    }],
+    "presets": [{
+      "name": "Service",
+      "category": "Layout"
+    }]
+  }
+{% endschema %}

@@ -1,0 +1,86 @@
+<section class="section bg-cover" {% if section.settings.deal_bg != blank %} style="background-image: url({{ section.settings.deal_bg | img_url : '1920x' }});" {% endif %}>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 text-center text-md-left mb-4 mb-md-0">
+        {% if section.settings.deal_title != blank %}
+          <h1>{{ section.settings.deal_title }}</h1>
+        {% endif %}
+        {% if section.settings.deal_subtitle != blank %}
+          <h4 class="mb-40">{{ section.settings.deal_subtitle }}</h4>
+        {% endif %}
+        <!-- syo-timer -->
+        <div class="syotimer large">
+          <div id="simple-timer" {% if section.settings.ending_year != blank %}data-year="{{section.settings.ending_year}}"{% endif %} {% if section.settings.ending_month != blank %}data-month="{{section.settings.ending_month}}"{% endif %} {% if section.settigns.ending_day %}data-day="{{section.settings.ending_day}}"{% endif %} {% if section.settings.ending_hour != blank %}data-hour="{{section.settings.ending_hour}}"{% endif %}></div>
+        </div>
+        {% if section.settings.btn_url != blank %}
+          <a href="{{section.settings.btn_url}}" class="btn btn-primary">{{ section.settings.btn_text }}</a>
+        {% endif %}
+      </div>
+      <div class="col-md-6 text-center text-md-left align-self-center">
+        {% if section.settings.product_image != blank %}
+          <img src="{{ section.settings.product_image | img_url: '1920x' }}" alt="product-img" class="img-fluid up-down">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+  {
+    "name": "Product Deal",
+    "settings": [{
+        "type": "image_picker",
+        "id": "deal_bg",
+        "label": "Background Image"
+      },
+      {
+        "type": "text",
+        "id": "deal_title",
+        "label": "Title for Discounted Product"
+      },
+      {
+        "type": "text",
+        "id": "deal_subtitle",
+        "label": "Subtitle for Discounted Product"
+      },
+      {
+        "type": "text",
+        "id": "ending_year",
+        "label": "Deal Ending Year"
+      },
+      {
+        "type": "text",
+        "id": "ending_month",
+        "label": "Deal Ending Month"
+      },
+      {
+        "type": "text",
+        "id": "ending_day",
+        "label": "Deal Ending Day"
+      },
+      {
+        "type": "text",
+        "id": "ending_hour",
+        "label": "Deal Ending Hour"
+      },
+      {
+        "type": "text",
+        "id": "btn_text",
+        "label": "Deal Button Text"
+      },
+      {
+        "type": "url",
+        "id": "btn_url",
+        "label": "Your Product Link"
+      },
+      {
+        "type": "image_picker",
+        "id": "product_image",
+        "label": "Upload Product Image"
+      }
+    ],
+    "presets": [{
+      "name": "Product Deal",
+      "category": "Layout"
+    }]
+  }
+{% endschema %}

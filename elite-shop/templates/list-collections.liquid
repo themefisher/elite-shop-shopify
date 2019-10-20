@@ -1,0 +1,35 @@
+{% include 'breadcrumb', title: "Collections" %}
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      {% for collection in collections %}
+      {% unless collection.handle == 'frontpage' %}
+      <div class="col-lg-4 col-md-6 mb-50">
+        <div class="card p-0">
+          {% if collection.products.first != blank %}
+          {% assign first_product = collection.products.first %}
+          <div class="border-bottom text-center hover-zoom-img">
+            <a href="{{ collection.url }}" title="{{ 'collections.general.link_title' | t: title: title }}">
+              {% if collection.image != blank %}
+              {{ collection | img_url: '480x480' | img_tag: collection.title }}
+              {% elsif collection.products.first != blank %}
+              {{ collection.products.first | img_url: '480x480' | img_tag: collection.title }}
+              {% else %}
+              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+              {{ 'collection-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
+              {% endif %}
+            </a>
+          </div>
+          {% endif %}
+          <div class="px-4 py-3">
+            <h4 class="d-inline-block mb-0 mt-1">{{collection.title}}</h4>
+            <a href="{{collection.url}}" class="btn btn-sm btn-outline-primary float-right">view more</a>
+          </div>
+        </div>
+      </div>
+      {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</section>

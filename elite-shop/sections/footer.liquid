@@ -1,0 +1,177 @@
+<footer class="section bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6 mb-5 mb-md-0 text-center text-sm-left">
+        <h3 class="mb-4">Contact</h3>
+        {% if section.settings.contact_address != blank %}
+          <p>{{ section.settings.contact_address }}</p>
+        {% endif %}
+        {% if section.settings.phone_number != blank %}
+          <p>{{ section.settings.phone_number }}</p>
+        {% endif %}
+        {% if section.settings.email != blank %}
+          <p>{{ section.settings.email }}</p>
+        {% endif %}
+        <ul class="list-inline social-icons">
+          {% if settings.facebook_url != blank %}
+            <li class="list-inline-item">
+              <a href="{{ settings.facebook_url }}"><i class="ti-facebook"></i></a>
+            </li>
+          {% endif %}
+          {% if settings.twitter_url != blank %}
+            <li class="list-inline-item">
+              <a href="{{ settings.twitter_url }}"><i class="ti-twitter-alt"></i></a>
+            </li>
+          {% endif %}
+          {% if settings.pinterest_url != blank %}
+            <li class="list-inline-item">
+              <a href="{{ settings.pinterest_url }}"><i class="ti-pinterest"></i></a>
+            </li>
+          {% endif %}
+          {% if settings.instagram_url != blank %}
+            <li class="list-inline-item">
+              <a href="{{ settings.instagram_url }}"><i class="ti-instagram"></i></a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% if section.settings.category_linklist != blank %}
+      <div class="col-md-3 col-sm-6 mb-5 mb-md-0 text-center text-sm-left">
+          <h3 class="mb-4">Category</h3>
+          <ul class="pl-0">
+            {% for link in linklists[section.settings.category_linklist].links %}
+              <li class="mb-2">
+                <a class="text-color" href="{{ link.url }}">{{ link.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+      </div>
+      {% endif %}
+      {% if section.settings.important_linklist != blank %}
+      <div class="col-md-3 col-sm-6 mb-5 mb-md-0 text-center text-sm-left">
+        <h3 class="mb-4">Useful Link</h3>
+        <ul class="pl-0">
+          {% for link in linklists[section.settings.important_linklist].links %}
+            <li class="mb-2">
+              <a class="text-color" href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if section.settings.footer_linklist != blank %}
+      <div class="col-md-3 col-sm-6 text-center text-sm-left">
+        <h3 class="mb-4">Our Policies</h3>
+        <ul class="pl-0">
+          {% for link in linklists[section.settings.footer_linklist].links %}
+            <li class="mb-2">
+              <a class="text-color" href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<div class="bg-dark py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      {% if section.settings.copyright_text != blank %}
+      <div class="col-md-5 text-center text-md-left mb-4 mb-md-0">
+          <p class="text-white mb-0">{{ section.settings.copyright_text }}</p>
+      </div>
+      {% endif %}
+      <div class="col-md-2 text-center text-md-left mb-4 mb-md-0">
+        {% if section.settings.footer_logo != blank %}
+          <img src="{{section.settings.footer_logo | img_url : '320x'}}" alt="{{ section.settings.logo.alt | default: shop.name }}">
+        {% else %}
+          <span class="text-white h4">{{ shop.name }}</span>
+        {% endif %}
+      </div>
+      {% if section.settings.show_payment_icons == true %}
+      <div class="col-md-5 text-center text-md-right mb-4 mb-md-0">
+        <ul class="list-inline">
+          {% if settings.accept_americanexpress %}
+            <li class="list-inline-item">
+              <img class="rounded" src="{{ 'card-1.jpg' | asset_url }}" alt="card">
+            </li>
+          {% endif %}
+          {% if settings.accept_discover %}
+            <li class="list-inline-item">
+              <img class="rounded" src="{{ 'card-2.jpg' | asset_url }}" alt="card">
+            </li>
+          {% endif %}
+          {% if settings.accept_maestro %}
+            <li class="list-inline-item">
+              <img class="rounded" src="{{ 'card-3.jpg' | asset_url }}" alt="card">
+            </li>
+          {% endif %}
+          {% if settings.accept_visa %}
+            <li class="list-inline-item">
+              <img class="rounded" src="{{ 'card-4.jpg' | asset_url }}" alt="card">
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</footer>
+
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type"  : "image_picker",
+        "id"    : "footer_logo",
+        "label" : "Footer Logo"
+      },
+      {
+        "type"  : "text",
+        "id"    : "contact_address",
+        "label" : "Office Address"
+      },
+      {
+        "type"  : "text",
+        "id"    : "phone_number",
+        "label" : "Phone Number"
+      },
+      {
+        "type"  : "text",
+        "id"    : "email",
+        "label" : "Email Address"
+      },
+      {
+        "type": "link_list",
+        "id": "category_linklist",
+        "label": "Category Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "important_linklist",
+        "label": "Impotant Menu"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_linklist",
+        "label": "Footer Menu",
+        "default": "footer"
+      },
+      {
+        "type"  : "text",
+        "id"    : "copyright_text",
+        "label" : "Copyright Text"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_payment_icons",
+        "label": "Show payment icons",
+        "default": true
+      }
+    ]
+  }
+
+{% endschema %}

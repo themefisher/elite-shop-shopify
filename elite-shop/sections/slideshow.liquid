@@ -1,0 +1,152 @@
+<!-- hero area -->
+<section class="section bg-gray hero-area overflow-hidden">
+  <div class="container">
+    <div class="hero-slider">
+      {% for block in section.blocks %}
+      <!-- Start first slide  -->
+      <div class="slider-item slide--{{block.id}}" {{block.shopify_attributes}} data-index="{{forloop.index0}}">
+        <div class="row">
+          <div class="col-lg-6 align-self-center text-center text-md-left mb-4 mb-lg-0">
+            <div data-duration-in=".3" data-animation-in="slideInUp">
+              {% if block.settings.slider_top_title != blank %}
+              <h3>{{ block.settings.slider_top_title }}</h3>
+              {% endif %}
+              {% if block.settings.slider_title != blank %}
+              <h1>{{ block.settings.slider_title }}</h1>
+              {% endif %}
+              {% if block.settings.slider_subtitle != blank %}
+              <h3>{{ block.settings.slider_subtitle }}</h3>
+              {% endif %}
+              {% if block.settings.description != blank %}
+              <p class="mb-4">{{ block.settings.description }}</p>
+              {% endif %}
+            </div>
+            {% if block.settings.btn_url != blank %}
+            <a href="{{ block.settings.btn_url }}" class="btn btn-primary" data-duration-in=".3" data-animation-in="zoomIn" data-delay-in=".3">{{ block.settings.btn_text }}</a>
+            {% endif %}
+          </div>
+          <div class="col-lg-6 text-center text-md-left">
+            <div class="bg-letter">
+              <!-- background letter -->
+              {% if block.settings.product_letter != blank %}
+              <span data-duration-in=".5" data-animation-in="bounceInRight" data-delay-in=".5">{{ block.settings.product_letter }}</span>
+              {% endif %}
+              {% if block.settings.slider_image %}
+              <img class="img-fluid d-unset" src="{{ block.settings.slider_image | img_url: '1920x' }}">
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- end slider item -->
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<!-- /hero area -->
+
+
+
+{% schema %}
+  {
+    "name": "Slideshow",
+    "max_blocks": 10,
+    "blocks": [{
+      "type": "slider_item",
+      "name": "Slider Item",
+      "settings": [{
+          "type": "text",
+          "id": "slider_top_title",
+          "label": "Slider Top Title"
+        },
+        {
+          "type": "text",
+          "id": "slider_title",
+          "label": "Slider Title"
+        },
+        {
+          "type": "text",
+          "id": "slider_subtitle",
+          "label": "Slider Subtitle"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description Text"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Text"
+        },
+        {
+          "type": "url",
+          "id": "btn_url",
+          "label": "Button Url"
+        },
+        {
+          "type": "image_picker",
+          "id": "slider_image",
+          "label": "Slider Image"
+        },
+        {
+          "type": "text",
+          "id": "product_letter",
+          "label": "You Product First Letter"
+        }
+      ]
+    }],
+    "presets": [{
+      "name": "Slideshow",
+      "category": "Slider"
+    }]
+  }
+{% endschema %}
+
+{%javascript%}
+  function heroSliderInit() {
+    $('.hero-slider').slick({
+      autoplay: true,
+      autoplaySpeed: 5000,
+      infinite: true,
+      arrows: true,
+      prevArrow: '<button type=\'button\' class=\'prevArrow\'></button>',
+      nextArrow: '<button type=\'button\' class=\'nextArrow\'></button>',
+      dots: false,
+      responsive: [{
+        breakpoint: 576,
+        settings: {
+          arrows: false
+        }
+      }]
+    });
+    $('.hero-slider').slickAnimation();
+  }
+
+  function destroySlider() {
+    if ($('.hero-slider').hasClass('slick-initialized')) {
+      $('.hero-slider').slick('destroy');
+    }
+  }
+
+  $(document).ready(function () {
+    heroSliderInit();
+  });
+
+  function onBlockChange(evt) {
+    var slide = 0;
+    var block = $('.slide--' + evt.detail.blockId);
+    slide = parseInt(block.attr("data-slick-index"));
+    console.log(slide);
+    $('.hero-slider').slick('slickGoTo', slide).slick('slickPause');
+  }
+
+  function onSectionChange(evt) {
+    destroySlider();
+    heroSliderInit();
+  }
+
+  $(document).on('shopify:block:select', onBlockChange);
+  $(document).on('shopify:section:select', onSectionChange);
+  $(document).on('shopify:section:reorder', onSectionChange);
+{%endjavascript%}

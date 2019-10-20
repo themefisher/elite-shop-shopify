@@ -1,0 +1,52 @@
+<section class="section bg-gray" data-section-id="{{ section.id }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        {% if section.settings.section_title != blank %}
+          <h2 class="section-title">{{ section.settings.section_title }}</h2>
+        {% endif %}
+        {% if section.settings.section_subtitle != blank %}
+          <p class="mb-4">{{ section.settings.section_subtitle }}</p>
+        {% endif %}
+      </div>
+      {% if section.settings.mc_action_url != blank %}
+      <div class="col-lg-6 col-md-8 col-sm-9 col-10 mx-auto">
+        <form name="mc-form" class="d-flex flex-column flex-sm-row" data-action="{{ section.settings.mc_action_url }}" id="mc-form">
+          <input type="email" name="EMAIL" class="form-control rounded-0 border-0 mr-3 mb-4 mb-sm-0" id="mce-EMAIL" placeholder="Enter your email" required>
+          <button type="submit" value="send" id="mc-embedded-subscribe" class="btn btn-primary">Subscribe</button>
+        </form>
+        <div class="text-center mt-3">
+          <p class="response_msg"></p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+
+{% schema %}
+  {
+    "name": "Newsletter",
+    "settings": [{
+        "type": "text",
+        "id": "section_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "section_subtitle",
+        "label": "Subtitle"
+      },
+      {
+        "type": "text",
+        "id": "mc_action_url",
+        "label": "MailChimp Action Url"
+      }
+    ],
+    "presets": [{
+      "name": "Newsletter",
+      "category": "Promotional"
+    }]
+  }
+{% endschema %}
